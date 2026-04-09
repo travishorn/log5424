@@ -75,6 +75,41 @@ describe("createLogger()", () => {
     expect(match2?.groups?.priority).toBe("167");
   });
 
+  test("uses logger defaultSdId for structured data objects missing sdId", () => {
+    const logger = createLogger({
+      appName: "checkout",
+      defaultSdId: "meta@32473",
+    });
+
+    const output = logger("foo", {
+      structuredData: { method: "GET", path: "/checkout" },
+    });
+    const match = output.match(SYSLOG_PATTERN);
+
+    expect(match).not.toBeNull();
+    expect(match?.groups?.structuredData).toBe(
+      '[meta@32473 method="GET" path="/checkout"]',
+    );
+  });
+
+  test("allows per-call defaultSdId to override logger default", () => {
+    const logger = createLogger({
+      appName: "checkout",
+      defaultSdId: "meta@32473",
+    });
+
+    const output = logger("foo", {
+      defaultSdId: "trace@32473",
+      structuredData: { requestId: "abc-123" },
+    });
+    const match = output.match(SYSLOG_PATTERN);
+
+    expect(match).not.toBeNull();
+    expect(match?.groups?.structuredData).toBe(
+      '[trace@32473 requestId="abc-123"]',
+    );
+  });
+
   test("logger.emergency() forces emergency severity", () => {
     const logger = createLogger({ facility: 4 });
     const output = logger.emergency("foo");

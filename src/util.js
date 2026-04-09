@@ -333,13 +333,17 @@ function escapeStructuredDataParamValue(value) {
  * is present; otherwise all remaining top-level properties are used.
  *
  * @param {Record<string, unknown>} element Structured data element object.
+ * @param {string | undefined} [defaultSdId] Default SD-ID to apply when the
+ * element does not provide one.
  * @returns {string} Serialized SD-ELEMENT.
  * @throws {TypeError} Thrown when the element shape is invalid.
  */
-function serializeStructuredDataElement(element) {
+function serializeStructuredDataElement(element, defaultSdId) {
   const { sdId, params, ...inlineParams } = element;
+  const normalizedSdId =
+    typeof sdId === "string" && sdId.trim() !== "" ? sdId : defaultSdId;
 
-  if (typeof sdId !== "string" || sdId.trim() === "") {
+  if (typeof normalizedSdId !== "string" || normalizedSdId.trim() === "") {
     throw new TypeError("structured data object must include a non-empty sdId");
   }
 
@@ -368,8 +372,8 @@ function serializeStructuredDataElement(element) {
   });
 
   return serializedParams.length > 0
-    ? `[${sdId} ${serializedParams.join(" ")}]`
-    : `[${sdId}]`;
+    ? `[${normalizedSdId} ${serializedParams.join(" ")}]`
+    : `[${normalizedSdId}]`;
 }
 
 /**
@@ -378,20 +382,24 @@ function serializeStructuredDataElement(element) {
  * Accepted input forms:
  * - `undefined`, which becomes the nil value `-`
  * - a raw structured data string
- * - a single structured data object with `sdId`
- * - an array of structured data objects
+ * - a single structured data object, optionally without `sdId` when a default
+ *   SD-ID is supplied
+ * - an array of structured data objects, each optionally without `sdId` when a
+ *   default SD-ID is supplied
  *
  * Arrays are serialized as adjacent SD-ELEMENT blocks with no spaces between
  * them, matching RFC 5424 formatting.
  *
  * @param {string | Record<string, unknown> | Array<Record<string, unknown>> |
  * undefined} structuredData Structured data input.
+ * @param {string | undefined} [defaultSdId] Default SD-ID to apply when object
+ * elements omit `sdId`.
  * @returns {string} Validated structured data string.
  * @throws {TypeError} Thrown when the input shape is unsupported or invalid.
  * @throws {Error} Thrown when the final serialized form is not valid structured
  * data.
  */
-export function normalizeStructuredData(structuredData) {
+export function normalizeStructuredData(structuredData, defaultSdId) {
   if (typeof structuredData === "undefined") {
     return "-";
   }
@@ -414,7 +422,7 @@ export function normalizeStructuredData(structuredData) {
           );
         }
 
-        return serializeStructuredDataElement(element);
+        return serializeStructuredDataElement(element, defaultSdId);
       })
       .join("");
 
@@ -423,7 +431,10 @@ export function normalizeStructuredData(structuredData) {
   }
 
   if (isPlainObject(structuredData)) {
-    const normalized = serializeStructuredDataElement(structuredData);
+    const normalized = serializeStructuredDataElement(
+      structuredData,
+      defaultSdId,
+    );
     validateStructuredData(normalized);
     return normalized;
   }
