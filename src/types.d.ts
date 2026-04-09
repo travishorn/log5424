@@ -6,14 +6,15 @@
  * A single structured data element.
  *
  * `sdId` becomes the SD-ID and the remaining properties become PARAM-NAME /
- * PARAM-VALUE pairs. If `params` is provided, it is used as the parameter
- * source instead of the remaining top-level properties.
+ * PARAM-VALUE pairs. If `sdId` is omitted, message generation falls back to
+ * `defaultSdId` and then `appName`. If `params` is provided, it is used as the
+ * parameter source instead of the remaining top-level properties.
  *
  * Example: `{ sdId: "meta@12345", method: "GET", path: "/users" }` serializes
  * to `[meta@12345 method="GET" path="/users"]`
  */
 export interface StructuredDataElement {
-  sdId: string;
+  sdId?: string;
   params?: Record<string, unknown>;
   [key: string]: unknown;
 }
@@ -55,6 +56,12 @@ export interface Options {
    * Application name token placed in the message header. @default "-"
    */
   appName?: string;
+
+  /**
+   * Default SD-ID used when structured data objects omit `sdId`. When omitted,
+   * the effective default falls back to `appName`.
+   */
+  defaultSdId?: string;
 
   /**
    * Process identifier token placed in the message header. Defaults to

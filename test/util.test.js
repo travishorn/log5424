@@ -183,6 +183,21 @@ test("normalizeStructuredData serializes sdId-only object", () => {
   expect(normalizeStructuredData({ sdId: "meta@12345" })).toBe("[meta@12345]");
 });
 
+test("normalizeStructuredData applies default sdId when missing", () => {
+  expect(normalizeStructuredData({ method: "GET" }, "meta@12345")).toBe(
+    '[meta@12345 method="GET"]',
+  );
+});
+
+test("normalizeStructuredData applies default sdId to arrays", () => {
+  expect(
+    normalizeStructuredData(
+      [{ method: "GET" }, { requestId: "abc-123" }],
+      "meta@12345",
+    ),
+  ).toBe('[meta@12345 method="GET"][meta@12345 requestId="abc-123"]');
+});
+
 test("normalizeStructuredData throws when params is not an object", () => {
   expect(() =>
     normalizeStructuredData({

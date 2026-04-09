@@ -229,6 +229,33 @@ describe("buildLogMessage()", () => {
     );
   });
 
+  test("defaults structured data sdId to appName", () => {
+    const output = buildLogMessage("foo", {
+      appName: "checkout",
+      structuredData: { method: "GET", path: "/users" },
+    });
+    const match = output.match(SYSLOG_PATTERN);
+
+    expect(match).not.toBeNull();
+    expect(match?.groups?.structuredData).toBe(
+      '[checkout method="GET" path="/users"]',
+    );
+  });
+
+  test("prefers defaultSdId over appName", () => {
+    const output = buildLogMessage("foo", {
+      appName: "checkout",
+      defaultSdId: "meta@32473",
+      structuredData: { method: "GET", path: "/users" },
+    });
+    const match = output.match(SYSLOG_PATTERN);
+
+    expect(match).not.toBeNull();
+    expect(match?.groups?.structuredData).toBe(
+      '[meta@32473 method="GET" path="/users"]',
+    );
+  });
+
   test("accepts structured data array of objects", () => {
     const structuredData = [
       { sdId: "meta@12345", method: "GET" },
@@ -243,11 +270,14 @@ describe("buildLogMessage()", () => {
     );
   });
 
-  test("throws on invalid structured data object", () => {
+  test("throws on invalid defaultSdId when structured data omits sdId", () => {
     expect(() =>
-      // @ts-expect-error intentionally invalid shape for runtime validation check
-      buildLogMessage("foo", { structuredData: { method: "GET" } }),
-    ).toThrow("structured data object must include a non-empty sdId");
+      buildLogMessage("foo", {
+        appName: "checkout",
+        defaultSdId: "bad sd id",
+        structuredData: { method: "GET" },
+      }),
+    ).toThrow("defaultSdId must be a non-empty string without whitespace");
   });
 
   test("allows an empty message", () => {

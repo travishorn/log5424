@@ -31,7 +31,6 @@ export const defaultOptions = {
  */
 export function buildLogMessage(msg, options) {
   const mergedOptions = { ...defaultOptions, ...validateOptions(options) };
-  const structuredData = normalizeStructuredData(mergedOptions.structuredData);
 
   const facility = resolveFacility(mergedOptions.facility);
   const severity = resolveSeverity(mergedOptions.severity);
@@ -42,6 +41,14 @@ export function buildLogMessage(msg, options) {
     "hostname",
   );
   const appName = validateToken(mergedOptions.appName, "appName");
+  const defaultSdId = validateToken(
+    mergedOptions.defaultSdId ?? appName,
+    "defaultSdId",
+  );
+  const structuredData = normalizeStructuredData(
+    mergedOptions.structuredData,
+    defaultSdId,
+  );
   const procId = validateProcId(mergedOptions.procId ?? process.pid);
   const msgId = validateToken(mergedOptions.msgId, "msgId");
   const msgPart = msg ? ` ${msg}` : "";

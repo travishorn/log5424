@@ -55,17 +55,17 @@ console.log(logger("app started")); // defaults to "debug" or custom severity yo
 Structured data can be provided in multiple forms:
 
 - Raw RFC 5424 string
-- Single object with `sdId`
-- Array of objects with `sdId`
+- Single object with optional `sdId`
+- Array of objects with optional `sdId`
 
 ```js
 import { info } from "log5424";
 
-const line = info("request complete", {
-  structuredData: [
-    { sdId: "http@32473", method: "GET", path: "/health" },
-    { sdId: "trace@32473", requestId: "abc-123" },
-  ],
+info("request complete", {
+  structuredData: {
+    method: "GET",
+    path: "/health",
+  },
 });
 ```
 
