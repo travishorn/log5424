@@ -1,0 +1,12 @@
+import globals from "globals";
+import pluginJs from "@eslint/js";
+import eslintConfigPrettier from "eslint-config-prettier";
+
+export default [
+  {
+    ignores: ["docs/**"],
+  },
+  { languageOptions: { globals: globals.node } },
+  pluginJs.configs.recommended,
+  eslintConfigPrettier,
+];

@@ -1,0 +1,55 @@
+{
+  "name": "log5424",
+  "version": "0.1.0",
+  "description": "A lightweight RFC 5424 syslog message builder and parser for JavaScript and Node.js.",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/travishorn/log5424.git"
+  },
+  "bugs": {
+    "url": "https://github.com/travishorn/log5424/issues"
+  },
+  "homepage": "https://github.com/travishorn/log5424#readme",
+  "exports": "./src/index.js",
+  "files": [
+    "src"
+  ],
+  "scripts": {
+    "test": "vitest --run",
+    "check:format": "prettier --check .",
+    "check:types": "tsc --noEmit",
+    "check:lint": "eslint .",
+    "check:all": "npm run lint:format && npm run lint:types && npm run lint",
+    "format": "prettier --write .",
+    "docs": "typedoc --entryPoints src/index.js --out docs"
+  },
+  "keywords": [
+    "syslog",
+    "rfc5424",
+    "rfc-5424",
+    "logging",
+    "logger",
+    "syslog-parser",
+    "parser",
+    "builder",
+    "formatter",
+    "structured-data",
+    "facility",
+    "severity"
+  ],
+  "author": "Travis Horn <travis@travishorn.com> (https://travishorn.com/)",
+  "license": "MIT",
+  "type": "module",
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "@types/node": "^25.5.0",
+    "@vitest/coverage-v8": "^4.1.2",
+    "eslint": "^10.1.0",
+    "eslint-config-prettier": "^10.1.8",
+    "globals": "^17.4.0",
+    "prettier": "^3.8.1",
+    "typedoc": "^0.28.18",
+    "typescript": "^6.0.2",
+    "vitest": "^4.1.2"
+  }
+}
