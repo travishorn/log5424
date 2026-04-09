@@ -1,6 +1,6 @@
 {
   "name": "log5424",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "A lightweight RFC 5424 syslog message builder and parser for JavaScript and Node.js.",
   "repository": {
     "type": "git",
