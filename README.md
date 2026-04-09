@@ -24,6 +24,9 @@ console.log(line);
 // <135>1 2026-04-08T12:00:00.000Z my-host worker 1234 - - service started
 ```
 
+See the full API at
+[https://travishorn.github.io/log5424/](https://travishorn.github.io/log5424/).
+
 ## Usage Patterns
 
 ### 1) Direct severity functions
